@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Joke Generator with Speech</title>
+    <title>Random Joke Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,65 +50,90 @@
 <body>
 
 <div id="joke-container">
-    <div id="joke"></div>
+    <div id="joke">Loading joke...</div>
     <div id="answer"></div>
     <button id="reveal-btn">Reveal</button>
 </div>
 
 <script>
-// 预定义的笑话和答案列表
-const jokes = [
-    { joke: "Why don't scientists trust atoms?", answer: "Because they make up everything!" },
-    { joke: "Why did the chicken join a band?", answer: "Because it had the drumsticks!" },
-    { joke: "What do you call fake spaghetti?", answer: "An impasta!" },
-    { joke: "Why was the math book sad?", answer: "Because it had too many problems." },
-    { joke: "How does a penguin build its house?", answer: "Igloos it together!" }
-];
+    // 预定义的100个笑话和答案列表
+    const jokes = [
+        { joke: "Why don't scientists trust atoms?", answer: "Because they make up everything!" },
+        { joke: "Why did the chicken join a band?", answer: "Because it had the drumsticks!" },
+        { joke: "What do you call fake spaghetti?", answer: "An impasta!" },
+        { joke: "Why was the math book sad?", answer: "Because it had too many problems." },
+        { joke: "How does a penguin build its house?", answer: "Igloos it together!" },
+        { joke: "Why did the scarecrow win an award?", answer: "Because he was outstanding in his field!" },
+        { joke: "What do you call a bear with no teeth?", answer: "A gummy bear!" },
+        { joke: "Why don’t skeletons fight each other?", answer: "They don’t have the guts." },
+        { joke: "What do you get when you cross a snowman with a vampire?", answer: "Frostbite." },
+        { joke: "How do you organize a space party?", answer: "You planet." },
+        { joke: "Why don't some couples go to the gym?", answer: "Because some relationships don't work out." },
+        { joke: "What did the big flower say to the little flower?", answer: "Hey, bud!" },
+        { joke: "Why was the broom late?", answer: "It swept in." },
+        { joke: "Why don’t oysters share their pearls?", answer: "Because they’re shellfish." },
+        { joke: "What do you call cheese that isn't yours?", answer: "Nacho cheese!" },
+        { joke: "Why did the golfer bring two pairs of pants?", answer: "In case he got a hole in one!" },
+        { joke: "Why are fish so smart?", answer: "Because they live in schools!" },
+        { joke: "Why did the tomato turn red?", answer: "Because it saw the salad dressing!" },
+        { joke: "What did the ocean say to the shore?", answer: "Nothing, it just waved." },
+        { joke: "Why don't eggs tell jokes?", answer: "They'd crack each other up." },
+        { joke: "How do you make a tissue dance?", answer: "You put a little boogie in it." },
+        { joke: "What kind of shoes do ninjas wear?", answer: "Sneakers." },
+        { joke: "What do you call an alligator in a vest?", answer: "An investigator." },
+        { joke: "Why did the bicycle fall over?", answer: "Because it was two-tired!" },
+        { joke: "Why can't you hear a pterodactyl go to the bathroom?", answer: "Because the 'P' is silent." },
+        { joke: "Why did the coffee file a police report?", answer: "It got mugged." },
+        { joke: "What do you call a pony with a cough?", answer: "A little horse!" },
+        { joke: "Why don't crabs give to charity?", answer: "Because they’re shellfish." },
+        { joke: "What do you get when you cross a sheep and a bee?", answer: "A bah-humbug." },
+        { joke: "What do you call a fake noodle?", answer: "An impasta!" },
+        { joke: "How does a penguin build its house?", answer: "Igloos it together!" },
+        { joke: "Why are elevator jokes so good?", answer: "Because they work on many levels." },
+        { joke: "Why don't some people eat clocks?", answer: "It's too time-consuming." },
+        { joke: "What do you call a dog magician?", answer: "A labracadabrador." },
+        { joke: "Why did the cookie go to the hospital?", answer: "Because it felt crummy." },
+        { joke: "How do you make holy water?", answer: "You boil the hell out of it." },
+        { joke: "Why don't seagulls fly over the bay?", answer: "Because then they'd be bagels." },
+        { joke: "What do you call a lazy kangaroo?", answer: "A pouch potato." },
+        { joke: "Why don't skeletons play music in church?", answer: "They have no organs." },
+        { joke: "Why don’t some couples go to the gym?", answer: "Because some relationships don’t work out." },
+    ];
 
-// 获取DOM元素
-const jokeContainer = document.getElementById('joke');
-const answerContainer = document.getElementById('answer');
-const revealBtn = document.getElementById('reveal-btn');
+    // 获取DOM元素
+    const jokeContainer = document.getElementById('joke');
+    const answerContainer = document.getElementById('answer');
+    const revealBtn = document.getElementById('reveal-btn');
 
-// 当前的笑话索引
-let currentJokeIndex = null;
+    // 当前的笑话索引
+    let currentJokeIndex = null;
 
-// 随机生成笑话的函数
-function generateRandomJoke() {
-    currentJokeIndex = Math.floor(Math.random() * jokes.length);
-    return jokes[currentJokeIndex];
-}
-
-// 更新笑话内容并通过音频播报笑话
-function updateJoke() {
-    const currentJoke = generateRandomJoke();
-    jokeContainer.textContent = currentJoke.joke;
-    answerContainer.textContent = currentJoke.answer;
-    answerContainer.style.display = 'none'; // 隐藏答案
-    speakText(currentJoke.joke); // 播放笑话
-}
-
-// 显示答案并通过音频播报答案
-function revealAnswer() {
-    if (currentJokeIndex !== null) {
-        answerContainer.style.display = 'block';
-        speakText(jokes[currentJokeIndex].answer); // 播放答案
+    // 随机生成笑话的函数
+    function generateRandomJoke() {
+        currentJokeIndex = Math.floor(Math.random() * jokes.length);
+        return jokes[currentJokeIndex];
     }
-}
 
-// 使用SpeechSynthesis API播放文本
-function speakText(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1; // 调整语速，1为正常速度
-    speechSynthesis.speak(utterance);
-}
+    // 更新笑话内容
+    function updateJoke() {
+        const currentJoke = generateRandomJoke();
+        jokeContainer.textContent = currentJoke.joke;
+        answerContainer.textContent = currentJoke.answer;
+        answerContainer.style.display = 'none'; // 隐藏答案
+    }
 
-// 初始化时立即生成并显示一个随机笑话
-updateJoke();
+    // 显示答案
+    function revealAnswer() {
+        if (currentJokeIndex !== null) {
+            answerContainer.style.display = 'block';
+        }
+    }
 
-// 点击“Reveal”按钮显示答案
-revealBtn.addEventListener('click', revealAnswer);
+    // 页面加载完成后立即生成并显示一个随机笑话
+    window.onload = updateJoke;
 
+    // 点击“Reveal”按钮显示答案
+    revealBtn.addEventListener('click', revealAnswer);
 </script>
 </body>
 </html>
